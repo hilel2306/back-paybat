@@ -47,13 +47,19 @@ export const login = async (req, res, next) => {
 
 }
 
-export const isLoggedIn = async (req, res, next) => {
+export const logout = (req, res, next) => {
+    console.log("logout")
+    res.clearCookie("cookieToken");
+    return res.status(201).json({ message: "cookies deleted" })
+}
+
+export const isLoggedIn = (req, res, next) => {
     try {
         jwt.verify(req.cookies.cookieToken, process.env.JWTSECRET, (err, decoded) => {
             if (err) {
                 res.send({ message: "we don't trust you" })
             } else {
-                res.send({ email: decoded.email })
+                next()
             }
         })
     } catch (error) {
