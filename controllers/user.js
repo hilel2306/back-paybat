@@ -2,6 +2,7 @@ import { createUser, findUserByEmail } from "../models/user.js";
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+// import decode from "jsonwebtoken";
 dotenv.config();
 
 
@@ -27,6 +28,7 @@ export const signup = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
     const { email, password } = req.body
+    const expiryDate = new Date(Date.now() + 60 * 60 * 24000) // 24 hours
     try {
         const user = await findUserByEmail(email)
         if (!user) {
@@ -36,7 +38,7 @@ export const login = async (req, res, next) => {
         if (!isValid) {
             return res.status(401).json({ message: "Wrong password" })
         }
-        res.cookie("cookieToken", jwt.sign({ email: email }, process.env.JWTSECRET), { httpOnly: true })
+        res.cookie("cookieToken", jwt.sign({ email: email }, process.env.JWTSECRET), { httpOnly: true, expires: expiryDate })
         return res.status(201).json({ message: "Successfully registered" })
 
     } catch (error) {
@@ -45,8 +47,16 @@ export const login = async (req, res, next) => {
 
 }
 
-// export const isLoggedIn = async (req, res, next) => {
-
-
-
-// }
+export const isLoggedIn = async (req, res, next) => {
+    try {
+        jwt.verify(req.cookies.cookieToken, process.env.JWTSECRET, (err, decoded) => {
+            if (err) {
+                res.send({ message: "we don't trust you" })
+            } else {
+                res.send({ email: decoded.email })
+            }
+        })
+    } catch (error) {
+        console.error(error.message)
+    }
+}
