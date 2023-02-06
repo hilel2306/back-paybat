@@ -1,22 +1,19 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const cors = require("cors");
+import cors from "cors";
+import bodyParser from "body-parser";
+import dotenv from 'dotenv';
+dotenv.config();
+import { UserRoute } from "./routes/user.js";
+
 
 app.use(cors());
+app.use(bodyParser.json());
 
-app.get("/", (req, res) => {
-    res.send("Hi");
-});
 
-app.get("/hello", (req, res) => {
-    res.send("Hello");
-});
+app.use('/user', UserRoute)
 
-app.get("/bonjour", (req, res) => {
-    res.send("Bonjour");
-});
 
-// Remarquez que le `app.listen` doit se trouver après les déclarations des routes
-app.listen(5000, () => {
+app.listen(process.env.PORT, () => {
     console.log("Server has started");
 });
