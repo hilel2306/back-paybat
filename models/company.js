@@ -18,3 +18,11 @@ export const createCompany = async (userEmail, legalstatus, name, email, adress,
     return getCompany(id)
 }
 
+export const findCompanyByEmail = async (email) => {
+    const [result] = await pool.query(`SELECT * FROM company WHERE email = ?`, [email])
+    if (result.length > 0) {
+        const id = result[0].id
+        return getCompany(id)
+    }
+    return false
+}
