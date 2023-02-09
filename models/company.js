@@ -2,7 +2,7 @@ import { pool } from "../util/database.js";
 
 
 
-export const getCompany = async (id) => {
+export const getCompanyById = async (id) => {
     const [rows] = await pool.query(`
     SELECT * FROM company WHERE id = ?`, [id])
     return rows[0]
@@ -15,14 +15,14 @@ export const createCompany = async (userEmail, legalstatus, name, email, adress,
     )
     const id = result.insertId
     await pool.query(`UPDATE user SET company_id = ? WHERE email = ?`, [id, userEmail])
-    return getCompany(id)
+    return getCompanyById(id)
 }
 
 export const findCompanyByEmail = async (email) => {
     const [result] = await pool.query(`SELECT * FROM company WHERE email = ?`, [email])
     if (result.length > 0) {
         const id = result[0].id
-        return getCompany(id)
+        return getCompanyById(id)
     }
     return false
 }
