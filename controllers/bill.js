@@ -1,4 +1,4 @@
-import { createBill, getBills, updateBill } from "../models/bill.js";
+import { createBill, getBillbyId, getBills, updateBill } from "../models/bill.js";
 
 export const billRegistration = async (req, res, next) => {
     const { status, title, companyId } = req.body
@@ -7,6 +7,16 @@ export const billRegistration = async (req, res, next) => {
         return res.status(201).json(bill)
     } catch (error) {
         console.error(error.message);
+    }
+}
+
+export const getBill = async (req, res) => {
+    const { id } = req.body
+    try {
+        const bill = await getBillbyId(id)
+        return res.status(201).json(bill)
+    } catch (error) {
+        console.error({ message: error.message })
     }
 }
 
