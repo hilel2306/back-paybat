@@ -8,7 +8,7 @@ import { billRegistration, getAllbills, getBill, saveBill } from "../controllers
 const router = express.Router();
 
 router.get('/get', isLoggedIn, getAllbills);
-router.get('/get', isLoggedIn, getBill);
+router.get('/:id', isLoggedIn, getBill);
 router.post('/registration', isLoggedIn, billRegistration);
 router.put('/save', isLoggedIn, saveBill);
 
