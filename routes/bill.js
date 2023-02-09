@@ -1,14 +1,15 @@
 import express from "express";
 import { isLoggedIn } from "../controllers/user.js";
-import { billRegistration } from "../controllers/bill.js";
+import { billRegistration, getAllbills, saveBill } from "../controllers/bill.js";
 
 
 
 
 const router = express.Router();
 
-
+router.get('/get', isLoggedIn, getAllbills);
 router.post('/registration', isLoggedIn, billRegistration);
+router.put('/save', isLoggedIn, saveBill);
 
 
 export { router as BillRoute };
