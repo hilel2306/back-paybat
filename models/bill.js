@@ -14,15 +14,45 @@ export const createBill = async (status, title, companyId) => {
     `, [status, title, companyId]
     )
     const id = result.insertId
-    // await pool.query(`UPDATE user SET company_id = ? WHERE email = ?`, [id, userEmail])
     return getBillbyId(id)
 }
 
-// export const findCompanyByEmail = async (email) => {
-//     const [result] = await pool.query(`SELECT * FROM company WHERE email = ?`, [email])
-//     if (result.length > 0) {
-//         const id = result[0].id
-//         return getCompany(id)
-//     }
-//     return false
-// }
+
+
+export const getBills = async (companyId) => {
+    const [rows] = await pool.query(`SELECT * FROM bill WHERE company_id = ?`, [companyId])
+    return rows
+}
+
+
+
+export const updateBill = async (obj) => {
+    delete obj.company_id;
+
+    const keysArray = Object.keys(obj)
+    let arrayPropertiesValues = [];
+    let stringPropertyToSet = ``;
+
+    for (let i = 1; i < keysArray.length; i++) {
+        if (i === keysArray.length - 1) {
+            stringPropertyToSet = stringPropertyToSet + keysArray[i] + ` = ? `
+        } else {
+            stringPropertyToSet = stringPropertyToSet + keysArray[i] + ` = ?, `
+        }
+    }
+
+    for (let property in obj) {
+        arrayPropertiesValues.push(obj[property])
+    }
+
+    arrayPropertiesValues.shift();
+    arrayPropertiesValues.push(obj.id);
+
+    const stringSql = `UPDATE bill SET ${stringPropertyToSet} WHERE id = ?`
+    console.log(stringPropertyToSet)
+    const [result] = await pool.query(stringSql, arrayPropertiesValues)
+
+    return getBillbyId(obj.id)
+
+}
+
