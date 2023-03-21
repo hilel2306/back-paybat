@@ -40,4 +40,10 @@ export const verifyEmail = async (key) => {
 export const setEmailVerify = async (id) => {
     const [result] = await pool.query(`UPDATE user SET email_verify = true WHERE id = ?`, [id])
     return result
-} 
+}
+
+
+export const updateUserKey = async (email, key, expiryDate) => {
+    const [result] = await pool.query(`UPDATE user SET token = ?,  expiration_link = ? WHERE email = ?`, [key, expiryDate, email])
+    return result
+}
